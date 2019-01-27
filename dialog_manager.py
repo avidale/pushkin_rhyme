@@ -1,9 +1,4 @@
-
-
-class BaseDialogManager:
-    def respond(self, user_object, message_text):
-        raise NotImplementedError()
-        return updated_user_object, response, suggests, commands
+from tgalice.dialog_manager import BaseDialogManager
 
 
 class StupidDialogManager(BaseDialogManager):

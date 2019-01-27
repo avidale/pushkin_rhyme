@@ -3,7 +3,7 @@ import pickle
 import os
 from datetime import datetime
 import logging
-from dialog_connector import DialogConnector
+from tgalice.dialog_connector import DialogConnector
 from dialog_manager import StupidDialogManager
 from flask import Flask, request
 import json
