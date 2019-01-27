@@ -2,7 +2,6 @@ import telebot
 import pickle
 import os
 from datetime import datetime
-import psycopg2
 
 CONN = None
 
