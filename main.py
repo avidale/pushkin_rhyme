@@ -2,31 +2,12 @@ import telebot
 import pickle
 import os
 from datetime import datetime
-
-CONN = None
+from dialog_connector import DialogConnector
+from dialog_manager import StupidDialogManager
 
 TOKEN = os.environ['TOKEN']
 bot = telebot.TeleBot(TOKEN)
-
-
-def log_message(message, response):
-    global CONN
-    if CONN is None or CONN.closed:
-        try:
-            CONN = psycopg2.connect(os.environ['DATABASE_URL'])
-        except OperationalError:
-            return
-    cur = CONN.cursor()
-    query = "INSERT INTO dialog VALUES('{}', '{}', '{}', '{}', TIMESTAMP '{}')".format(
-        message.chat.id, 
-        message.chat.username, 
-        message.text, 
-        response, 
-        datetime.now()
-    )
-    cur.execute(query)
-    CONN.commit()
-
+connector = DialogConnector(StupidDialogManager())
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
@@ -34,7 +15,7 @@ def send_welcome(message):
 
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
-    response = "Вы сказали, '{}'".format(message.text.lower())
+    response = connector.respond(message)
     # log_message(message, response)
     print('message was "{}"'.format(message.text))
     bot.reply_to(message, response)
