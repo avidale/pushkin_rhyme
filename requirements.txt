@@ -1,2 +1,3 @@
 git+https://github.com/eternnoir/pyTelegramBotAPI
+git+https://github.com/avidale/tgalice
 Flask==0.12.2

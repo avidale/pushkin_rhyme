@@ -1,11 +1,13 @@
-
+# todo: migrate all the infrastructural code to tgalice
 
 
 class DialogConnector:
+    COMMAND_EXIT = 'exit'
     """ This class provides unified interface for both Telegram and Alice applications """
-    def __init__(self, dialog_manager, default_source='telegram'):
+    def __init__(self, dialog_manager, storage=None, default_source='telegram'):
         self.dialog_manager = dialog_manager
         self.default_source = default_source
+        self.storage = storage
 
     def respond(self, message, source=None):
         # todo: support different triggers - not only messages, but calendar events as well
@@ -21,10 +23,14 @@ class DialogConnector:
         return response
 
     def get_user_object(self, user_id):
-        return {}
+        if self.storage is None:
+            return {}
+        return self.storage.get(user_id)
 
     def set_user_object(self, user_id, user_object):
-        raise NotImplementedError()
+        if self.storage is None:
+            raise NotImplementedError()
+        self.storage.set(user_id, user_object)
 
     def standardize_input(self, source, message):
         if source == 'telegram':
@@ -39,7 +45,11 @@ class DialogConnector:
 
     def standardize_output(self, source, original_message, response_text, response_commands=None, suggests=None):
         if response_commands:
-            raise NotImplementedError
+            for command in response_commands:
+                if command != self.COMMAND_EXIT:
+                    raise NotImplementedError('Command "{}" is not implemented'.format(command))
+        else:
+            response_commands = []
         if suggests:
             raise NotImplementedError()
         if source == 'telegram':
@@ -49,8 +59,7 @@ class DialogConnector:
                 "version": original_message['version'],
                 "session": original_message['session'],
                 "response": {
-                    # todo: handle end_session
-                    "end_session": False,
+                    "end_session": bool(self.COMMAND_EXIT in response_commands),
                     "text": response_text
                 }
             }
