@@ -19,7 +19,7 @@ COMMAND_EXIT = 'exit'
 
 
 class StupidDialogManager(BaseDialogManager):
-    def respond(self, user_object, message_text):
+    def respond(self, user_object, message_text, metadata):
         suggests = ['довольно']
         updated_user_object = copy.deepcopy(user_object)
         commands = []

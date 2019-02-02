@@ -38,7 +38,7 @@ def echo_all(message):
     response = connector.respond(message, source='telegram')
     # log_message(message, response)
     print('message was "{}"'.format(message.text))
-    bot.reply_to(message, response)
+    bot.reply_to(message, **response)
 
 
 if __name__ == '__main__':
