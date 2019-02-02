@@ -10,13 +10,13 @@ import json
 
 logging.basicConfig(level=logging.DEBUG)
 
-TOKEN = os.environ['TOKEN']
+TOKEN = os.environ.get('TOKEN', 'no_token_is_avaliable')
 bot = telebot.TeleBot(TOKEN)
 connector = DialogConnector(StupidDialogManager())
 app = Flask(__name__)
 
 
-@app.route("/", methods=['POST'])
+@app.route("/pushkin-rhyme/", methods=['POST'])
 def main():
     # Функция получает тело запроса и возвращает ответ.
     logging.info('Alice request: %r', request.json)
