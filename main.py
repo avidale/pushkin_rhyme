@@ -1,9 +1,8 @@
 import telebot
-import pickle
 import os
-from datetime import datetime
 import logging
 from tgalice.dialog_connector import DialogConnector
+from tgalice.session_storage import BaseStorage
 from dialog_manager import StupidDialogManager
 from flask import Flask, request
 import json
@@ -12,7 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 TOKEN = os.environ.get('TOKEN', 'no_token_is_avaliable')
 bot = telebot.TeleBot(TOKEN)
-connector = DialogConnector(StupidDialogManager())
+connector = DialogConnector(StupidDialogManager(), storage=BaseStorage())
 app = Flask(__name__)
 
 

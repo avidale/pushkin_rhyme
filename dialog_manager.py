@@ -1,4 +1,5 @@
 import pickle
+import copy
 from tgalice.dialog_manager import BaseDialogManager
 
 from pushkin.rhyme import Rhymer
@@ -19,7 +20,7 @@ COMMAND_EXIT = 'exit'
 class StupidDialogManager(BaseDialogManager):
     def respond(self, user_object, message_text):
         suggests = []
-        updated_user_object = user_object
+        updated_user_object = copy.deepcopy(user_object)
         commands = []
         text = message_text.lower()
         if not text or text == 'помощь' or not updated_user_object:
