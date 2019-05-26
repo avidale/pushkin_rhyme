@@ -41,6 +41,12 @@ def echo_all(message):
     bot.reply_to(message, **response)
 
 
+@app.route('/' + TELEBOT_URL + TOKEN, methods=['POST'])
+def get_message():
+    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+    return "!", 200
+
+
 @app.route("/" + TELEBOT_URL)
 def telegram_web_hook():
     bot.remove_webhook()
