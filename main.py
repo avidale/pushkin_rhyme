@@ -1,3 +1,4 @@
+import argparse
 import telebot
 import os
 import logging
@@ -15,8 +16,12 @@ connector = DialogConnector(StupidDialogManager(), storage=BaseStorage())
 app = Flask(__name__)
 
 
-@app.route("/pushkin-rhyme/", methods=['POST'])
-def main():
+TELEBOT_URL = 'telebot_webhook/'
+BASE_URL = 'https://pushkin-rhyme.herokuapp.com/'
+
+
+@app.route("/alice/", methods=['POST'])
+def alice_response():
     # Функция получает тело запроса и возвращает ответ.
     logging.info('Alice request: %r', request.json)
     response = connector.respond(request.json, source='alice')
@@ -36,6 +41,19 @@ def echo_all(message):
     bot.reply_to(message, **response)
 
 
+@app.route("/" + TELEBOT_URL)
+def telegram_web_hook():
+    bot.remove_webhook()
+    bot.set_webhook(url=BASE_URL + TELEBOT_URL + TOKEN)
+    return "!", 200
+
+
 if __name__ == '__main__':
-    print('start work')
-    bot.polling()
+    parser = argparse.ArgumentParser(description='Run the bot')
+    parser.add_argument('--poll', action='store_true')
+    args = parser.parse_args()
+    if args.poll:
+        bot.polling()
+    else:
+        telegram_web_hook()
+        app.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
