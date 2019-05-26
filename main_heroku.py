@@ -1,4 +1,3 @@
-import telebot
 import os
 import logging
 from tgalice.dialog_connector import DialogConnector
@@ -9,8 +8,6 @@ import json
 
 logging.basicConfig(level=logging.DEBUG)
 
-TOKEN = os.environ.get('TOKEN', 'no_token_is_avaliable')
-bot = telebot.TeleBot(TOKEN)
 connector = DialogConnector(StupidDialogManager(), storage=BaseStorage())
 app = Flask(__name__)
 
@@ -28,14 +25,5 @@ def main():
     )
 
 
-@bot.message_handler(func=lambda message: True)
-def echo_all(message):
-    response = connector.respond(message, source='telegram')
-    # log_message(message, response)
-    print('message was "{}"'.format(message.text))
-    bot.reply_to(message, **response)
-
-
 if __name__ == '__main__':
-    print('start work')
-    bot.polling()
+    app.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
