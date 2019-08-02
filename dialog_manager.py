@@ -1,7 +1,6 @@
-import pickle
 import copy
-from tgalice.dialog_manager import BaseDialogManager
-from tgalice import basic_nlu
+import pickle
+import tgalice
 
 from pushkin.rhyme import Rhymer
 
@@ -18,18 +17,20 @@ TEXT_FAREWELL = 'Всего доброго! Если захотите повто
 COMMAND_EXIT = 'exit'
 
 
-class StupidDialogManager(BaseDialogManager):
-    def respond(self, user_object, message_text, metadata):
+class StupidDialogManager(tgalice.dialog_manager.BaseDialogManager):
+    def respond(self, ctx: tgalice.dialog_manager.Context):
         suggests = ['довольно']
-        updated_user_object = copy.deepcopy(user_object)
+        updated_user_object = copy.deepcopy(ctx.user_object)
         commands = []
-        text = basic_nlu.fast_normalize(message_text)
-        if not text or basic_nlu.like_help(text) or not updated_user_object:
+        text = tgalice.basic_nlu.fast_normalize(ctx.message_text)
+        if not text or tgalice.basic_nlu.like_help(text) or not updated_user_object:
             response = TEXT_HELP
-        elif text == 'довольно' or basic_nlu.like_exit(text):
+        elif text == 'довольно' or tgalice.basic_nlu.like_exit(text):
             response = TEXT_FAREWELL
             commands.append(COMMAND_EXIT)
         else:
             response = rhymer.random_rhyme(text)
         updated_user_object['last_dialog'] = [text, response]
-        return updated_user_object, response, suggests, commands
+        return tgalice.dialog_manager.Response(
+            response, user_object=updated_user_object, suggests=suggests, commands=commands
+        )
