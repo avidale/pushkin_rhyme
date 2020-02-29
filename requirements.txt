@@ -1,6 +1,6 @@
 pytelegrambotapi
-tgalice==0.1.1
-Flask==1.0.2
+tgalice>=0.1.1
+Flask>=1.0.2
 pymorphy2
 numpy
 tqdm
