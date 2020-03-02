@@ -154,12 +154,14 @@ class Accentor:
         else: # default = 'none
             return word
 
+
 class Rhymer:
     def __init__(self, simple_dicts, accented_dicts, dictionary, decay=0.3):
         self.decay = decay
         self.simple_dicts = simple_dicts
         self.accented_dicts = accented_dicts
         self.accentor = Accentor(dictionary)
+
     def random_rhyme(self, phrase):
         results = find_rhyme(phrase, dicts=self.accented_dicts, accented=True, accentor=self.accentor)
         if not results:
