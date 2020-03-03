@@ -23,7 +23,11 @@ class StupidDialogManager(tgalice.dialog_manager.BaseDialogManager):
         updated_user_object = copy.deepcopy(ctx.user_object)
         commands = []
         text = tgalice.basic_nlu.fast_normalize(ctx.message_text)
-        if not text or tgalice.basic_nlu.like_help(text) or not updated_user_object:
+        if isinstance(ctx.raw_message, dict):
+            new_session = ctx.raw_message.get('session', {}).get('new')
+        else:
+            new_session = False
+        if not text or tgalice.basic_nlu.like_help(text) or new_session or text == 'start':
             response = TEXT_HELP
         elif text == 'довольно' or tgalice.basic_nlu.like_exit(text):
             response = TEXT_FAREWELL

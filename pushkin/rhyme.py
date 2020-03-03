@@ -15,7 +15,7 @@ import numpy as np
 VOWELS_LOWER = 'аоуыэяёюие'
 VOWELS_UPPER = VOWELS_LOWER.upper()
 MA = MorphAnalyzer()
-KS = [4, 3, 2]
+KS = (4, 3, 2)
 
 
 def strip_all(line):
@@ -168,12 +168,13 @@ class Rhymer:
             results = find_rhyme(phrase, dicts=self.simple_dicts, accented=False, accentor=self.accentor)
             if results:
                 return results[0]
-            return 'увы, не получилось'
+            # if failed, return just a random phrase
+            return random.choice(random.choice(list(self.simple_dicts[4].values())))
         best = results[0][2]
         if self.decay == 0:
-            best_results = [r[0] for r in results if r[2]==best]
+            best_results = [r[0] for r in results if r[2] == best]
             return best_results[random.randint(0, len(best_results)-1)]
-        else: # 0 < decay <= 1
+        else:  # 0 < decay <= 1
             probas = [self.decay**(r[2]-best) for r in results]
             probas = np.array(probas) / sum(probas)
             return np.random.choice([r[0] for r in results], p=probas)
