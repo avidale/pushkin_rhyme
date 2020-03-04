@@ -19,7 +19,10 @@ TEXTS_WAIT = [
 
 
 def fast_handler(event, context):
+    input_text = (event.get('request', {}).get('command', '') or '').lower().strip()
     if event.get('session', {}).get('new'):
+        text = TEXT_HELP
+    elif 'помощь' in input_text or 'что ты умеешь' in input_text or 'что ты можешь' in input_text:
         text = TEXT_HELP
     else:
         text = random.choice(TEXTS_WAIT)
